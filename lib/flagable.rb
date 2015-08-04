@@ -1,0 +1,2 @@
+module Flagable
+end
