@@ -7,10 +7,10 @@ require "flagable/version"
 Gem::Specification.new do |s|
   s.name        = "flagable"
   s.version     = Flagable::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Flagable."
+  s.authors     = ["Andreas Stephanides"]
+  s.email       = ["andreas.stephanides@gmx.at"]
+  s.homepage    = ""
+  s.summary     = "Flagable provides the action flag for controllers and the necessary funcitons for the model for easy flags"
   s.description = "TODO: Description of Flagable."
   s.license     = "MIT"
 
@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 4.1.8"
 
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "rspec"
 end
