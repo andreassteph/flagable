@@ -19,17 +19,18 @@ module Flagable
         fi = controller_path.classify.constantize::FLAG_ICONS
  
         @obj=controller_path.classify.constantize.find(params[:id])
-        lflag=("flag_"+params[:flag]).to_sym
-        authorize! lflag, @obj
+        flg = params[:flag]
+        lflag=("flag_"+params[:flag])
+        authorize! lflag.to_sym, @obj
         unless params[:flag].nil? || params[:flag].empty? || params[:value].nil?
-          if @obj.respond_to?(lflag.to_s+"=")
-            @obj.send(lflag.to_s+"=",params[:value]=="true")
+          if @obj.respond_to?(lflag+"=")
+            @obj.send(lflag+"=",params[:value]=="true")
             @obj.save
           end
         end
         respond_to do |format|
-          format.html {render partial: "flags/flaglink", locals: {flag: params[:flag],icon: fi[params[:flag]]}}
-          format.js {render partial: "flags/flag", locals: {flag: params[:flag], icon: fi[params[:flag]]}}
+#          format.html {render partial: "flags/flaglink", locals: {flag: params[:flag],icon: fi[params[:flag]]}}
+          format.js { jq_render_replace(@obj.flaglinkid(flg), params[:flag]+ "is now" + params[:value]) { render_to_string inline:" <%= flag_link(@obj, params[:flag])%>"}} #}  partial: "flags/flag", locals: {flag: params[:flag], icon: fi[params[:flag]]}}
         end
       end
     end
@@ -66,7 +67,7 @@ module Flagable
       value=obj.send("flag_"+flag)
       cstyle=(value) ? "true" :"false"
       cfm = (fc.nil? || fc["flag_"+flag].nil?) ?   {} : {confirm:  fc["flag_"+flag]}
-      link_to ff_icon(fi[flag]), url_for({controller: obj.class.name.tableize,action: :flag, flag: flag, value: !value, theme: nil, locale: nil, id: obj.id}), remote: true, class:("flag-"+cstyle +" flag-"+flag + "-"+cstyle ), id: obj.flaglinkid(flag), data: cfm
+      link_to  content_tag("i","", class: "ficon "+fi[flag].to_s ), url_for({controller: obj.class.name.tableize,action: :flag, flag: flag, value: !value, id: obj.id}), remote: true, class:("flag-"+cstyle +" flag-"+flag + "-"+cstyle ), id: obj.flaglinkid(flag), data: cfm
     end
   end
 end
