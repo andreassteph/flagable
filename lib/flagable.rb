@@ -30,7 +30,7 @@ module Flagable
         end
         respond_to do |format|
 #          format.html {render partial: "flags/flaglink", locals: {flag: params[:flag],icon: fi[params[:flag]]}}
-          format.js { jq_render_replace(@obj.flaglinkid(flg), params[:flag]+ "is now" + params[:value]) { render_to_string inline:" <%= flag_link(@obj, params[:flag])%>"}} #}  partial: "flags/flag", locals: {flag: params[:flag], icon: fi[params[:flag]]}}
+          format.js { jq_render_replace(@obj.flaglinkid(flg), params[:flag]+ "is now" + params[:value]) { render_to_string inline:" <%= flag_link(@obj, params[:flag], params[:text],{class: params[:class]})%>"}} #}  partial: "flags/flag", locals: {flag: params[:flag], icon: fi[params[:flag]]}}
         end
       end
     end
@@ -60,14 +60,14 @@ module Flagable
   end
   module FlagableHelper
 
-    def flag_link(obj, flag, text="")
+    def flag_link(obj, flag, text="",d={})
       flag=flag.to_s
       fi = obj.class::FLAG_ICONS
       fc = obj.class::FLAG_CONFIRM
       value=obj.send("flag_"+flag)
       cstyle=(value) ? "true" :"false"
       cfm = (fc.nil? || fc["flag_"+flag].nil?) ?   {} : {confirm:  fc["flag_"+flag]}
-      link_to  content_tag("i","", class: "ficon "+fi[flag].to_s ), url_for({controller: obj.class.name.tableize,action: :flag, flag: flag, value: !value, id: obj.id}), remote: true, class:("flag-"+cstyle +" flag-"+flag + "-"+cstyle ), id: obj.flaglinkid(flag), data: cfm
+      link_to  content_tag("i","", class: "ficon "+fi[flag].to_s ), url_for({controller: obj.class.name.tableize,action: :flag, flag: flag, value: !value, id: obj.id, class: d["class"].to_s+" "+d[:class].to_s}), remote: true, class:("flag-"+cstyle +" flag-"+flag + "-"+cstyle+ " "+d["class"].to_s+ " "+d[:class].to_s ), id: obj.flaglinkid(flag), data: cfm
     end
   end
 end
